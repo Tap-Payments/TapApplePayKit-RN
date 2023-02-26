@@ -6,26 +6,105 @@ ReactNative wrapper for apple pay button
 
 ```sh
 npm install @tap-payments/apple-pay-rn
+
+cd ios && pod install
 ```
 
+### Configure SDK Example
+
+
+```ts
+enum SdkMode {
+  production,
+  sandbox,
+}
+```
+
+```ts
+enum AllowedCardNetworks {
+  VISA = 'VISA',
+  AMEX = 'AMEX',
+  JCB = 'JCB',
+  MADA = 'MADA',
+}
+
+enum MerchantCapabilities {
+  capability3DS,
+  capabilityCredit,
+  capabilityDebit,
+  capabilityEMV,
+}
+```
+
+```ts
+ApplePayConfig = {
+  sandboxKey: string;
+  productionKey: string;
+  countryCode: string;
+  transactionCurrency: TapCurrencyCode;
+  allowedCardNetworks: AllowedCardNetworks[];
+  environmentMode: SdkMode;
+  merchantId: string;
+  amount: number;
+  merchantCapabilities: MerchantCapabilities[];
+};
+```
 ## Usage
 
-```js
-import { multiply } from '@tap-payments/apple-pay-rn';
+```ts 
+const init = useCallback(async () => {
+    try {
+            const config = {
+            sandboxKey: 'sk_test_xxxxxxxxxxxxxxxxxxx',
+            productionKey: 'sk_test_xxxxxxxxxxxxxxxxxxx',
+            countryCode: 'US',
+            transactionCurrency: TapCurrencyCode.USD,
+            allowedCardNetworks: [AllowedCardNetworks.VISA],
+            environmentMode: SdkMode.sandbox,
+            merchantId: 'xxxxxxx',
+            amount: 23,
+            merchantCapabilities: [
+                MerchantCapabilities.capability3DS,
+                MerchantCapabilities.capabilityCredit,
+                MerchantCapabilities.capabilityDebit,
+                MerchantCapabilities.capabilityEMV,
+            ],
+        };
+        
 
-// ...
+      let res: AppleToken = await getApplePayToken(config);
+      // let res: TapToken = await getTapToken(config);
 
-const result = await multiply(3, 7);
+      console.log("🚀", JSON.stringify(res))
+    } catch (error) {
+      console.log("🚀", JSON.stringify(error))
+    }
+  }, []);
 ```
 
-## Contributing
+```ts
+    enum ApplePayButtonType {
+        appleLogoOnly,
+        buyWithApplePa,
+        setupApplePay,
+        payWithApplePa,
+        donateWithApplePay,
+        checkoutWithApplePay,
+        bookWithApplePay,
+        subscribeWithApplePay,
+    }
 
-See the [contributing guide](CONTRIBUTING.md) to learn how to contribute to the repository and the development workflow.
+    enum ApplePayButtonStyle {
+        Black,
+        White,
+        WhiteOutline,
+        Auto,
+    }
 
-## License
-
-MIT
-
----
-
-Made with [create-react-native-library](https://github.com/callstack/react-native-builder-bob)
+    <ApplePay
+        style={styles.button}
+        onPress={init}
+        buttonStyle={ApplePayButtonStyle.Black}
+        buttonType={ApplePayButtonType.appleLogoOnly}
+    />
+```
