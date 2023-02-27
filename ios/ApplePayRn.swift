@@ -129,11 +129,9 @@ class ApplePayRn: NSObject {
     }
    
     tapApplePay.authorizePayment(in: controller!, for: request) { token in
-      print(token.stringAppleToken)
       self.tapApplePay.createTapToken(for: token, onTokenReady: { tapToken in
-        print(tapToken)
+        resolve(tapToken.dictionary)
       }, onErrorOccured: { (session, result, error) in
-        print(error)
         reject("createTapTokenError", error.debugDescription, "createTapTokenError")
       })
     }
@@ -163,5 +161,74 @@ class ApplePayRn: NSObject {
     let myTapApplePayRequest:TapApplePayRequest = .init()
     myTapApplePayRequest.build(with: countryCode, paymentNetworks: paymentNetworks, paymentItems: [], paymentAmount: amount, currencyCode: transactionCurrency,merchantID:merchantID, merchantCapabilities: merchantCapability)
     return myTapApplePayRequest
+  }
+}
+
+private enum CodingKeys: String, CodingKey {
+    
+  case identifier         = "id"
+  case object             = "object"
+  case card               = "card"
+  case type               = "type"
+  case creationDate       = "creationDate"
+  case clientIPAddress    = "clientIPAddress"
+  case isLiveMode         = "isLiveMode"
+  case isUsed             = "isUsed"
+  case lastFourDigits     = "lastFour"
+  case expirationMonth    = "expMonth"
+  case expirationYear     = "expYear"
+  case binNumber          = "firstSix"
+  case brand              = "brand"
+  case funding            = "funding"
+  case cardholderName     = "name"
+  case customerIdentifier = "customer"
+  case fingerprint        = "fingerprint"
+  case address            = "address"
+}
+
+
+extension TokenizedCard: Encodable {
+  public func encode(to encoder: Encoder) throws {
+    var container = encoder.container(keyedBy: CodingKeys.self)
+    try container.encode(identifier, forKey: .identifier)
+    try container.encode(object, forKey: .object)
+    try container.encode(lastFourDigits, forKey: .lastFourDigits)
+    try container.encode(expirationMonth, forKey: .expirationMonth)
+    try container.encode(expirationYear, forKey: .expirationYear)
+    try container.encode(binNumber, forKey: .binNumber)
+    try container.encode(brand, forKey: .brand)
+    try container.encode(funding, forKey: .funding)
+    try container.encode(cardholderName, forKey: .cardholderName)
+    try container.encode(customerIdentifier, forKey: .customerIdentifier)
+    try container.encode(fingerprint, forKey: .fingerprint)
+    try container.encode(address, forKey: .address)
+  }
+}
+
+extension TokenType: Encodable {
+  
+}
+
+
+extension Token: Encodable {
+  
+  
+  public func encode(to encoder: Encoder) throws {
+    var container = encoder.container(keyedBy: CodingKeys.self)
+    try container.encode(identifier, forKey: .identifier)
+    try container.encode(object, forKey: .object)
+    try container.encode(card, forKey: .card)
+    try container.encode(type, forKey: .type)
+    try container.encode(creationDate, forKey: .creationDate)
+    try container.encode(clientIPAddress, forKey: .clientIPAddress)
+    try container.encode(isLiveMode, forKey: .isLiveMode)
+    try container.encode(isUsed, forKey: .isUsed)
+  }
+}
+
+extension Encodable {
+  var dictionary: [String: Any]? {
+    guard let data = try? JSONEncoder().encode(self) else { return nil }
+    return (try? JSONSerialization.jsonObject(with: data, options: .allowFragments)).flatMap { $0 as? [String: Any] }
   }
 }

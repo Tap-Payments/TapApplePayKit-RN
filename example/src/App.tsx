@@ -5,9 +5,11 @@ import {
   ApplePayButtonType,
   AppleToken,
   getApplePayToken,
+  getTapToken,
   MerchantCapabilities,
   SdkMode,
   TapCurrencyCode,
+  TapToken,
 } from '@tap-payments/apple-pay-rn';
 import * as React from 'react';
 import { useCallback } from 'react';
@@ -16,7 +18,7 @@ import { StyleSheet, View, Text, ScrollView, SafeAreaView } from 'react-native';
 export default function App() {
   const [result, setResult] = React.useState<string | undefined>();
 
-  const init = useCallback(async () => {
+  const tapToken = useCallback(async () => {
     try {
       const config = {
         sandboxKey: 'sk_test_cvSHaplrPNkJO7dhoUxDYjqA',
@@ -34,15 +36,37 @@ export default function App() {
           MerchantCapabilities.capabilityEMV,
         ],
       };
-      // await getApplePayToken(config);
+      let res: TapToken = await getTapToken(config);
+      setResult(JSON.stringify(res));
+    } catch (e) {
+      setResult(e as string);
+    }
+  }, []);
 
+  const applePayToken = useCallback(async () => {
+    try {
+      const config = {
+        sandboxKey: 'sk_test_cvSHaplrPNkJO7dhoUxDYjqA',
+        productionKey: 'sk_live_QglH8V7Fw6NPAom4qRcynDK2',
+        countryCode: 'US',
+        transactionCurrency: TapCurrencyCode.USD,
+        allowedCardNetworks: [AllowedCardNetworks.VISA],
+        environmentMode: SdkMode.sandbox,
+        merchantId: 'merchant.tap.gosell',
+        amount: 23,
+        merchantCapabilities: [
+          MerchantCapabilities.capability3DS,
+          MerchantCapabilities.capabilityCredit,
+          MerchantCapabilities.capabilityDebit,
+          MerchantCapabilities.capabilityEMV,
+        ],
+      };
       let res: AppleToken = await getApplePayToken(config);
       setResult(res.stringAppleToken);
     } catch (e) {
       setResult(e as string);
     }
   }, []);
-
   return (
     <SafeAreaView style={styles.mainContainer}>
       <View style={styles.container}>
@@ -51,9 +75,17 @@ export default function App() {
             <Text>Result: {result}</Text>
           </ScrollView>
         </View>
+        <Text>applePayToken</Text>
         <ApplePay
           style={styles.button}
-          onPress={init}
+          onPress={applePayToken}
+          buttonStyle={ApplePayButtonStyle.Black}
+          buttonType={ApplePayButtonType.appleLogoOnly}
+        />
+        <Text>tapToken</Text>
+        <ApplePay
+          style={styles.button}
+          onPress={tapToken}
           buttonStyle={ApplePayButtonStyle.Black}
           buttonType={ApplePayButtonType.appleLogoOnly}
         />
@@ -82,5 +114,6 @@ const styles = StyleSheet.create({
     height: 50,
     justifyContent: 'center',
     alignItems: 'center',
+    margin: 10,
   },
 });
