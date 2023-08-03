@@ -21,8 +21,8 @@ export default function App() {
   const tapToken = useCallback(async () => {
     try {
       const config = {
-        sandboxKey: 'sk_test_cvSHaplrPNkJO7dhoUxDYjqA',
-        productionKey: 'sk_live_QglH8V7Fw6NPAom4qRcynDK2',
+        sandboxKey: 'pk_test_Vlk842B1EA7tDN5QbrfGjYzh',
+        productionKey: 'pk_live_UYnihb8dtBXm9fDSw1kFlPQA',
         countryCode: 'US',
         transactionCurrency: TapCurrencyCode.USD,
         allowedCardNetworks: [AllowedCardNetworks.VISA],
@@ -46,8 +46,8 @@ export default function App() {
   const applePayToken = useCallback(async () => {
     try {
       const config = {
-        sandboxKey: 'sk_test_cvSHaplrPNkJO7dhoUxDYjqA',
-        productionKey: 'sk_live_QglH8V7Fw6NPAom4qRcynDK2',
+        sandboxKey: 'pk_test_Vlk842B1EA7tDN5QbrfGjYzh',
+        productionKey: 'pk_live_UYnihb8dtBXm9fDSw1kFlPQA',
         countryCode: 'US',
         transactionCurrency: TapCurrencyCode.USD,
         allowedCardNetworks: [AllowedCardNetworks.VISA],
