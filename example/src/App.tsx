@@ -3,13 +3,13 @@ import {
   ApplePay,
   ApplePayButtonStyle,
   ApplePayButtonType,
-  AppleToken,
   getApplePayToken,
   getTapToken,
   MerchantCapabilities,
   SdkMode,
   TapCurrencyCode,
-  TapToken,
+  type AppleToken,
+  type TapToken,
 } from '@tap-payments/apple-pay-rn';
 import * as React from 'react';
 import { useCallback } from 'react';

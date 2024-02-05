@@ -492,6 +492,7 @@
 				DEVELOPMENT_TEAM = NWDL7FQSXL;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = ApplePayRnExample/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -520,6 +521,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = NWDL7FQSXL;
 				INFOPLIST_FILE = ApplePayRnExample/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 14.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

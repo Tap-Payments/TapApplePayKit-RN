@@ -114,6 +114,7 @@ class ApplePayRn: NSObject {
                 reject("Please Enter correct values", "Please Enter correct values", "wrong params")
                 return
             }
+ 
             self.tapApplePay.authorizePayment(in: self.controller!, for: request) { token in
                 resolve(["stringAppleToken": token.stringAppleToken])
             } onErrorOccured: { error in
@@ -125,6 +126,7 @@ class ApplePayRn: NSObject {
     
     @objc(generateTapApplePayToken:withResolver:withRejecter:)
     func generateTapApplePayToken(arguments: NSDictionary,  resolve: @escaping RCTPromiseResolveBlock,reject: @escaping RCTPromiseRejectBlock) -> Void {
+        
         self.generateRequest(arguments: arguments) { request in
             guard let request = request else {
                 reject("Please Enter correct values", "Please Enter correct values", "wrong params")
@@ -161,7 +163,13 @@ class ApplePayRn: NSObject {
             callback(nil)
             return
         }
-        
+        TapApplePay.setupTapMerchantApplePay(merchantKey: .init(sandbox: sandboxKey,
+                                                                production: productionKey)) {  [self] in
+            
+        }
+        onErrorOccured: { error in
+            
+        }
         TapApplePay.sdkMode = sdkMode
         TapApplePay.secretKey = .init(sandbox: sandboxKey,
                                       production: productionKey)
@@ -169,7 +177,7 @@ class ApplePayRn: NSObject {
                                                                 production: productionKey)) { [self] in
             let myTapApplePayRequest:TapApplePayRequest = .init()
             myTapApplePayRequest.build(paymentNetworks: paymentNetworks, paymentItems: [], paymentAmount: amount, currencyCode: transactionCurrency,merchantID:merchantID, merchantCapabilities: self.merchantCapability)
-            callback(myTapApplePayRequest)
+                        callback(myTapApplePayRequest)
         } onErrorOccured: { error in
             callback(nil)
         }
