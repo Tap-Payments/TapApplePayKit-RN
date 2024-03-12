@@ -163,13 +163,6 @@ class ApplePayRn: NSObject {
             callback(nil)
             return
         }
-        TapApplePay.setupTapMerchantApplePay(merchantKey: .init(sandbox: sandboxKey,
-                                                                production: productionKey)) {  [self] in
-            
-        }
-        onErrorOccured: { error in
-            
-        }
         TapApplePay.sdkMode = sdkMode
         TapApplePay.secretKey = .init(sandbox: sandboxKey,
                                       production: productionKey)
