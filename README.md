@@ -55,8 +55,8 @@ ApplePayConfig = {
 const init = useCallback(async () => {
     try {
             const config = {
-            sandboxKey: 'sk_test_xxxxxxxxxxxxxxxxxxx',
-            productionKey: 'sk_test_xxxxxxxxxxxxxxxxxxx',
+            sandboxKey: 'pk_test_xxxxxxxxxxxxxxxxxxx',    // public key
+            productionKey: 'pk_test_xxxxxxxxxxxxxxxxxxx', // public key
             countryCode: 'US',
             transactionCurrency: TapCurrencyCode.USD,
             allowedCardNetworks: [AllowedCardNetworks.VISA],
