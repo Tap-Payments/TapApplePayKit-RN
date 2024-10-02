@@ -14,5 +14,6 @@ export type ApplePayConfig = {
   environmentMode: SdkMode;
   merchantId: string;
   amount: number;
+  applePayMerchantId: string;
   merchantCapabilities: MerchantCapabilities[];
 };

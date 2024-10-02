@@ -21,13 +21,14 @@ export default function App() {
   const tapToken = useCallback(async () => {
     try {
       const config = {
-        sandboxKey: 'pk_test_Vlk842B1EA7tDN5QbrfGjYzh',
-        productionKey: 'pk_live_UYnihb8dtBXm9fDSw1kFlPQA',
-        countryCode: 'US',
+        sandboxKey: '',
+        productionKey: '',
+        countryCode: '',
         transactionCurrency: TapCurrencyCode.USD,
         allowedCardNetworks: [AllowedCardNetworks.VISA],
         environmentMode: SdkMode.sandbox,
-        merchantId: 'merchant.tap.gosell',
+        merchantId: 'applePayMerchantId',
+        applePayMerchantId: 'applePayMerchantId',
         amount: 23,
         merchantCapabilities: [
           MerchantCapabilities.capability3DS,
@@ -46,13 +47,14 @@ export default function App() {
   const applePayToken = useCallback(async () => {
     try {
       const config = {
-        sandboxKey: 'pk_test_Vlk842B1EA7tDN5QbrfGjYzh',
-        productionKey: 'pk_live_UYnihb8dtBXm9fDSw1kFlPQA',
+        sandboxKey: '',
+        productionKey: '',
         countryCode: 'US',
         transactionCurrency: TapCurrencyCode.USD,
         allowedCardNetworks: [AllowedCardNetworks.VISA],
         environmentMode: SdkMode.sandbox,
-        merchantId: 'merchant.tap.gosell',
+        merchantId: '',
+        applePayMerchantId: '',
         amount: 23,
         merchantCapabilities: [
           MerchantCapabilities.capability3DS,

@@ -52,6 +52,13 @@ class ApplePayRn: NSObject {
         return nil
     }
     
+  public var applePayMerchantID: String? {
+      if let applePayMerchantIDString: String = argsDataSource?["applePayMerchantId"] as? String {
+          return applePayMerchantIDString
+      }
+      return nil
+  }
+  
     
     public var amount: Double? {
         if let amountDouble: Double = argsDataSource?["amount"] as? Double {
@@ -80,6 +87,8 @@ class ApplePayRn: NSObject {
         }
         return []
     }
+  
+  
     
     public var  merchantCapability: PKMerchantCapability {
         var merchantCapabilityArray: PKMerchantCapability = []
@@ -115,7 +124,7 @@ class ApplePayRn: NSObject {
                 return
             }
  
-            self.tapApplePay.authorizePayment(in: self.controller!, for: request) { token in
+            self.tapApplePay.authorizePayment(for: request) { token in
                 resolve(["stringAppleToken": token.stringAppleToken])
             } onErrorOccured: { error in
                 reject("createTapTokenError", error.TapApplePayRequestValidationErrorRawValue(), "createTapTokenError")
@@ -132,7 +141,7 @@ class ApplePayRn: NSObject {
                 reject("Please Enter correct values", "Please Enter correct values", "wrong params")
                 return
             }
-            self.tapApplePay.authorizePayment(in: self.controller!, for: request) { token in
+            self.tapApplePay.authorizePayment(for: request) { token in
                 self.tapApplePay.createTapToken(for: token, onTokenReady: { tapToken in
                     resolve(tapToken.dictionary)
                 }, onErrorOccured: { (session, result, error) in
@@ -159,6 +168,7 @@ class ApplePayRn: NSObject {
               let sandboxKey  = sandboxKey,
               let amount = amount,
               let merchantID = merchantID,
+              let applePayMerchantID = applePayMerchantID,
               let transactionCurrency = transactionCurrency else {
             callback(nil)
             return
@@ -167,9 +177,9 @@ class ApplePayRn: NSObject {
         TapApplePay.secretKey = .init(sandbox: sandboxKey,
                                       production: productionKey)
         TapApplePay.setupTapMerchantApplePay(merchantKey: .init(sandbox: sandboxKey,
-                                                                production: productionKey)) { [self] in
+                                                                production: productionKey), merchantID: merchantID) { [self] in
             let myTapApplePayRequest:TapApplePayRequest = .init()
-            myTapApplePayRequest.build(paymentNetworks: paymentNetworks, paymentItems: [], paymentAmount: amount, currencyCode: transactionCurrency,merchantID:merchantID, merchantCapabilities: self.merchantCapability)
+            myTapApplePayRequest.build(paymentNetworks: paymentNetworks, paymentItems: [], paymentAmount: amount, currencyCode: transactionCurrency,applePayMerchantID: applePayMerchantID, merchantCapabilities: self.merchantCapability)
                         callback(myTapApplePayRequest)
         } onErrorOccured: { error in
             callback(nil)
