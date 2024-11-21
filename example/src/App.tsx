@@ -53,8 +53,8 @@ export default function App() {
         transactionCurrency: TapCurrencyCode.USD,
         allowedCardNetworks: [AllowedCardNetworks.VISA],
         environmentMode: SdkMode.sandbox,
-        merchantId: '',
-        applePayMerchantId: '',
+        merchantId: 'merchantId',
+        applePayMerchantId: 'applePayMerchantId',
         amount: 23,
         merchantCapabilities: [
           MerchantCapabilities.capability3DS,

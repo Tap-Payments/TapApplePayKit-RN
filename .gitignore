@@ -74,3 +74,5 @@ example/ios/ApplePayRnExample/ApplePayRnExample.entitlements
 example/yarn.lock
 
 example/ios/Podfile.lock
+
+example/.yarn/
