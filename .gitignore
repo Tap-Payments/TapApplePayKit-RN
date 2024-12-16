@@ -76,3 +76,5 @@ example/yarn.lock
 example/ios/Podfile.lock
 
 example/.yarn/
+
+.yarn/

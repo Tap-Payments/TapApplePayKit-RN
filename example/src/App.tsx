@@ -65,6 +65,7 @@ export default function App() {
       };
       let res: AppleToken = await getApplePayToken(config);
       setResult(res.stringAppleToken);
+      setResult(JSON.stringify(res));
     } catch (e) {
       setResult(e as string);
     }

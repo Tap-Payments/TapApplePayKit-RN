@@ -125,7 +125,16 @@ class ApplePayRn: NSObject {
             }
  
             self.tapApplePay.authorizePayment(for: request) { token in
-                resolve(["stringAppleToken": token.stringAppleToken])
+              resolve(
+                [
+                  "stringAppleToken": token.stringAppleToken as Any,
+                  "jsonAppleToken": token.jsonAppleToken,
+                  "displayName": token.rawAppleToken?.paymentMethod.displayName as Any,
+                  "network": token.rawAppleToken?.paymentMethod.network?.rawValue as Any,
+                  "type": token.rawAppleToken?.paymentMethod.type.toString() as Any,
+                  "transactionIdentifier": token.rawAppleToken?.transactionIdentifier as Any
+                ]
+              )
             } onErrorOccured: { error in
                 reject("createTapTokenError", error.TapApplePayRequestValidationErrorRawValue(), "createTapTokenError")
             }
@@ -255,3 +264,26 @@ extension Encodable {
         return (try? JSONSerialization.jsonObject(with: data, options: .allowFragments)).flatMap { $0 as? [String: Any] }
     }
 }
+
+extension PKPaymentMethodType {
+  func toString() -> String {
+    switch self {
+    case .unknown:
+      return "unknown"
+    case .debit:
+      return "debit"
+    case .credit:
+      return "credit"
+    case .prepaid:
+      return "prepaid"
+    case .store:
+      return "store"
+    case .eMoney:
+      return "eMoney"
+    @unknown default:
+      return "unknown"
+    }
+  }
+}
+
+
