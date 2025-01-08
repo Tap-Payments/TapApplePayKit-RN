@@ -96,16 +96,16 @@ class ApplePayRn: NSObject {
             intArray.forEach {
                 switch($0) {
                 case 0:
-                    merchantCapabilityArray.update(with: .capability3DS)
+                  merchantCapabilityArray.update(with:.threeDSecure)
                     break
                 case 1:
-                    merchantCapabilityArray.update(with:.capabilityCredit)
+                  merchantCapabilityArray.update(with:.credit)
                     break
                 case 2:
-                    merchantCapabilityArray.update(with:.capabilityDebit)
+                  merchantCapabilityArray.update(with:.debit)
                     break
                 case 3:
-                    merchantCapabilityArray.update(with:.capabilityEMV)
+                  merchantCapabilityArray.update(with:.emv)
                     break
                 default: break
                 }

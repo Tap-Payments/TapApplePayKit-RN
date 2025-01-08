@@ -18,10 +18,10 @@ export enum AllowedCardNetworks {
 }
 
 export enum MerchantCapabilities {
-  capability3DS,
-  capabilityCredit,
-  capabilityDebit,
-  capabilityEMV,
+  threeDSecure,
+  credit,
+  debit,
+  emv,
 }
 
 export enum SdkMode {

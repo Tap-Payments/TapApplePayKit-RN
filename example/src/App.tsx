@@ -31,10 +31,10 @@ export default function App() {
         applePayMerchantId: 'applePayMerchantId',
         amount: 23,
         merchantCapabilities: [
-          MerchantCapabilities.capability3DS,
-          MerchantCapabilities.capabilityCredit,
-          MerchantCapabilities.capabilityDebit,
-          MerchantCapabilities.capabilityEMV,
+          MerchantCapabilities.threeDSecure,
+          MerchantCapabilities.credit,
+          MerchantCapabilities.debit,
+          MerchantCapabilities.emv,
         ],
       };
       let res: TapToken = await getTapToken(config);
@@ -53,14 +53,14 @@ export default function App() {
         transactionCurrency: TapCurrencyCode.USD,
         allowedCardNetworks: [AllowedCardNetworks.VISA],
         environmentMode: SdkMode.sandbox,
-        merchantId: 'merchantId',
-        applePayMerchantId: 'applePayMerchantId',
+        merchantId: '',
+        applePayMerchantId: '',
         amount: 23,
         merchantCapabilities: [
-          MerchantCapabilities.capability3DS,
-          MerchantCapabilities.capabilityCredit,
-          MerchantCapabilities.capabilityDebit,
-          MerchantCapabilities.capabilityEMV,
+          MerchantCapabilities.threeDSecure,
+          MerchantCapabilities.credit,
+          MerchantCapabilities.debit,
+          MerchantCapabilities.emv,
         ],
       };
       let res: AppleToken = await getApplePayToken(config);

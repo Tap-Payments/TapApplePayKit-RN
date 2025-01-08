@@ -29,10 +29,10 @@ enum AllowedCardNetworks {
 }
 
 enum MerchantCapabilities {
-  capability3DS,
-  capabilityCredit,
-  capabilityDebit,
-  capabilityEMV,
+  threeDSecure,
+  credit,
+  debit,
+  emv,
 }
 ```
 
@@ -64,10 +64,10 @@ const init = useCallback(async () => {
             merchantId: 'xxxxxxx',
             amount: 23,
             merchantCapabilities: [
-                MerchantCapabilities.capability3DS,
-                MerchantCapabilities.capabilityCredit,
-                MerchantCapabilities.capabilityDebit,
-                MerchantCapabilities.capabilityEMV,
+              MerchantCapabilities.threeDSecure,
+              MerchantCapabilities.credit,
+              MerchantCapabilities.debit,
+              MerchantCapabilities.emv,
             ],
         };
         
