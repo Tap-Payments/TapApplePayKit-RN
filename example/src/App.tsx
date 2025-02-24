@@ -34,7 +34,6 @@ export default function App() {
           MerchantCapabilities.threeDSecure,
           MerchantCapabilities.credit,
           MerchantCapabilities.debit,
-          MerchantCapabilities.emv,
         ],
       };
       let res: TapToken = await getTapToken(config);
@@ -60,7 +59,6 @@ export default function App() {
           MerchantCapabilities.threeDSecure,
           MerchantCapabilities.credit,
           MerchantCapabilities.debit,
-          MerchantCapabilities.emv,
         ],
       };
       let res: AppleToken = await getApplePayToken(config);

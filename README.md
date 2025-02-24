@@ -32,7 +32,6 @@ enum MerchantCapabilities {
   threeDSecure,
   credit,
   debit,
-  emv,
 }
 ```
 
@@ -67,7 +66,6 @@ const init = useCallback(async () => {
               MerchantCapabilities.threeDSecure,
               MerchantCapabilities.credit,
               MerchantCapabilities.debit,
-              MerchantCapabilities.emv,
             ],
         };
         

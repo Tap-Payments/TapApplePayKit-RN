@@ -21,7 +21,6 @@ export enum MerchantCapabilities {
   threeDSecure,
   credit,
   debit,
-  emv,
 }
 
 export enum SdkMode {

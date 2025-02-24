@@ -104,9 +104,6 @@ class ApplePayRn: NSObject {
                 case 2:
                   merchantCapabilityArray.update(with:.debit)
                     break
-                case 3:
-                  merchantCapabilityArray.update(with:.emv)
-                    break
                 default: break
                 }
             }
