@@ -134,6 +134,8 @@ class ApplePayRn: NSObject {
               )
             } onErrorOccured: { error in
                 reject("createTapTokenError", error.TapApplePayRequestValidationErrorRawValue(), "createTapTokenError")
+            } onCancelled: {
+              reject("cancelled", "cancelled", "cancelled")
             }
         }
     }
@@ -155,6 +157,8 @@ class ApplePayRn: NSObject {
                 })
             } onErrorOccured: { error in
                 reject("createTapTokenError", error.TapApplePayRequestValidationErrorRawValue(), "createTapTokenError")
+            } onCancelled: {
+              reject("cancelled", "cancelled", "cancelled")
             }
         }
     }
