@@ -8,7 +8,7 @@ class ApplePayRn: NSObject {
     let controller = RCTPresentedViewController()
     let tapApplePay: TapApplePay = .init()
     var argsDataSource:[String:Any]? = [:]
-    
+    var isReturned: Bool = false
     
     public var sdkMode: SDKMode {
         if let sdkModeInt: Int = argsDataSource?["environmentMode"] as? Int {
@@ -52,13 +52,13 @@ class ApplePayRn: NSObject {
         return nil
     }
     
-  public var applePayMerchantID: String? {
-      if let applePayMerchantIDString: String = argsDataSource?["applePayMerchantId"] as? String {
-          return applePayMerchantIDString
-      }
-      return nil
-  }
-  
+    public var applePayMerchantID: String? {
+        if let applePayMerchantIDString: String = argsDataSource?["applePayMerchantId"] as? String {
+            return applePayMerchantIDString
+        }
+        return nil
+    }
+    
     
     public var amount: Double? {
         if let amountDouble: Double = argsDataSource?["amount"] as? Double {
@@ -87,8 +87,8 @@ class ApplePayRn: NSObject {
         }
         return []
     }
-  
-  
+    
+    
     
     public var  merchantCapability: PKMerchantCapability {
         var merchantCapabilityArray: PKMerchantCapability = []
@@ -96,13 +96,13 @@ class ApplePayRn: NSObject {
             intArray.forEach {
                 switch($0) {
                 case 0:
-                  merchantCapabilityArray.update(with:.threeDSecure)
+                    merchantCapabilityArray.update(with:.threeDSecure)
                     break
                 case 1:
-                  merchantCapabilityArray.update(with:.credit)
+                    merchantCapabilityArray.update(with:.credit)
                     break
                 case 2:
-                  merchantCapabilityArray.update(with:.debit)
+                    merchantCapabilityArray.update(with:.debit)
                     break
                 default: break
                 }
@@ -116,26 +116,32 @@ class ApplePayRn: NSObject {
     @objc(generateApplePayRawToken:withResolver:withRejecter:)
     func generateApplePayRawToken(arguments: NSDictionary, resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) -> Void {
         self.generateRequest(arguments: arguments) { result in
+            self.isReturned = false
             guard let request = result else {
                 reject("Please Enter correct values", "Please Enter correct values", "wrong params")
                 return
             }
- 
+            
             self.tapApplePay.authorizePayment(for: request) { token in
-              resolve(
-                [
-                  "stringAppleToken": token.stringAppleToken as Any,
-                  "jsonAppleToken": token.jsonAppleToken,
-                  "displayName": token.rawAppleToken?.paymentMethod.displayName as Any,
-                  "network": token.rawAppleToken?.paymentMethod.network?.rawValue as Any,
-                  "type": token.rawAppleToken?.paymentMethod.type.toString() as Any,
-                  "transactionIdentifier": token.rawAppleToken?.transactionIdentifier as Any
-                ]
-              )
+                self.isReturned = true
+                resolve(
+                    [
+                        "stringAppleToken": token.stringAppleToken as Any,
+                        "jsonAppleToken": token.jsonAppleToken,
+                        "displayName": token.rawAppleToken?.paymentMethod.displayName as Any,
+                        "network": token.rawAppleToken?.paymentMethod.network?.rawValue as Any,
+                        "type": token.rawAppleToken?.paymentMethod.type.toString() as Any,
+                        "transactionIdentifier": token.rawAppleToken?.transactionIdentifier as Any
+                    ]
+                )
             } onErrorOccured: { error in
+                self.isReturned = true
                 reject("createTapTokenError", error.TapApplePayRequestValidationErrorRawValue(), "createTapTokenError")
             } onCancelled: {
-              reject("cancelled", "cancelled", "cancelled")
+                if self.isReturned {
+                    return
+                }
+                reject("cancelled", "cancelled", "cancelled")
             }
         }
     }
@@ -149,16 +155,22 @@ class ApplePayRn: NSObject {
                 reject("Please Enter correct values", "Please Enter correct values", "wrong params")
                 return
             }
+            self.isReturned = false
             self.tapApplePay.authorizePayment(for: request) { token in
+                self.isReturned = true
                 self.tapApplePay.createTapToken(for: token, onTokenReady: { tapToken in
                     resolve(tapToken.dictionary)
                 }, onErrorOccured: { (session, result, error) in
                     reject("createTapTokenError", error.debugDescription, "createTapTokenError")
                 })
             } onErrorOccured: { error in
+                self.isReturned = true
                 reject("createTapTokenError", error.TapApplePayRequestValidationErrorRawValue(), "createTapTokenError")
             } onCancelled: {
-              reject("cancelled", "cancelled", "cancelled")
+                if self.isReturned {
+                    return
+                }
+                reject("cancelled", "cancelled", "cancelled")
             }
         }
     }
@@ -190,7 +202,7 @@ class ApplePayRn: NSObject {
                                                                 production: productionKey), merchantID: merchantID) { [self] in
             let myTapApplePayRequest:TapApplePayRequest = .init()
             myTapApplePayRequest.build(paymentNetworks: paymentNetworks, paymentItems: [], paymentAmount: amount, currencyCode: transactionCurrency,applePayMerchantID: applePayMerchantID, merchantCapabilities: self.merchantCapability)
-                        callback(myTapApplePayRequest)
+            callback(myTapApplePayRequest)
         } onErrorOccured: { error in
             callback(nil)
         }
@@ -267,24 +279,24 @@ extension Encodable {
 }
 
 extension PKPaymentMethodType {
-  func toString() -> String {
-    switch self {
-    case .unknown:
-      return "unknown"
-    case .debit:
-      return "debit"
-    case .credit:
-      return "credit"
-    case .prepaid:
-      return "prepaid"
-    case .store:
-      return "store"
-    case .eMoney:
-      return "eMoney"
-    @unknown default:
-      return "unknown"
+    func toString() -> String {
+        switch self {
+        case .unknown:
+            return "unknown"
+        case .debit:
+            return "debit"
+        case .credit:
+            return "credit"
+        case .prepaid:
+            return "prepaid"
+        case .store:
+            return "store"
+        case .eMoney:
+            return "eMoney"
+        @unknown default:
+            return "unknown"
+        }
     }
-  }
 }
 
 
