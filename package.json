@@ -1,6 +1,6 @@
 {
   "name": "@tap-payments/apple-pay-rn",
-  "version": "1.0.30",
+  "version": "1.0.31",
   "description": "test",
   "main": "lib/commonjs/index",
   "module": "lib/module/index",
