@@ -1,12 +1,17 @@
 #import <React/RCTBridgeModule.h>
+#import <React/RCTEventEmitter.h>
 
-@interface RCT_EXTERN_MODULE(ApplePayRn, NSObject)
+@interface RCT_EXTERN_MODULE(ApplePayRn, RCTEventEmitter)
 
 RCT_EXTERN_METHOD(generateApplePayRawToken: (NSDictionary *)arguments
                  withResolver:(RCTPromiseResolveBlock)resolve
                  withRejecter:(RCTPromiseRejectBlock)reject)
 
 RCT_EXTERN_METHOD(generateTapApplePayToken: (NSDictionary *)arguments
+                 withResolver:(RCTPromiseResolveBlock)resolve
+                 withRejecter:(RCTPromiseRejectBlock)reject)
+
+RCT_EXTERN_METHOD(setupApplePay: (NSDictionary *)arguments
                  withResolver:(RCTPromiseResolveBlock)resolve
                  withRejecter:(RCTPromiseRejectBlock)reject)
 

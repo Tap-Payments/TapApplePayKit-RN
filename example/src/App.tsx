@@ -8,27 +8,61 @@ import {
   MerchantCapabilities,
   SdkMode,
   TapCurrencyCode,
+  addApplePaySheetPresentedListener,
+  setupApplePay,
   type AppleToken,
   type TapToken,
 } from '@tap-payments/apple-pay-rn';
 import * as React from 'react';
-import { useCallback } from 'react';
+import { useCallback, useEffect } from 'react';
 import { StyleSheet, View, Text, ScrollView, SafeAreaView } from 'react-native';
 
 export default function App() {
   const [result, setResult] = React.useState<string | undefined>();
 
+  useEffect(() => {
+    const init = async () => {
+      try {
+        const res = await setupApplePay({
+          sandboxKey: 'pk_test_6tUrskBNfZXdamhoPcKJAxnv',
+          productionKey: 'pk_live_MwUuaWQIS86Fk4EsYqrCplez',
+          merchantId: '21162800',
+          environmentMode: SdkMode.sandbox,
+        });
+        console.log('Apple Pay setup done, skipped:', res.alreadySetup);
+        const res2 = await setupApplePay({
+          sandboxKey: 'pk_test_6tUrskBNfZXdamhoPcKJAxnv',
+          productionKey: 'pk_live_MwUuaWQIS86Fk4EsYqrCplez',
+          merchantId: '21162800',
+          environmentMode: SdkMode.sandbox,
+        });
+        console.log('Apple Pay setup done, skipped:', res2.alreadySetup);
+      } catch (err) {
+        console.warn('Apple Pay setup failed:', err);
+      }
+    };
+
+    init();
+  }, []);
+
+  useEffect(() => {
+    const subscription = addApplePaySheetPresentedListener((event) => {
+      console.log('Apple Pay sheet presented:', event.presented);
+    });
+    return () => subscription.remove();
+  }, []);
+
   const tapToken = useCallback(async () => {
     try {
       const config = {
-        sandboxKey: '',
-        productionKey: '',
+        sandboxKey: 'pk_test_6tUrskBNfZXdamhoPcKJAxnv',
+        productionKey: 'pk_live_MwUuaWQIS86Fk4EsYqrCplez',
         countryCode: '',
-        transactionCurrency: TapCurrencyCode.USD,
+        transactionCurrency: TapCurrencyCode.SAR,
         allowedCardNetworks: [AllowedCardNetworks.VISA],
         environmentMode: SdkMode.sandbox,
-        merchantId: 'applePayMerchantId',
-        applePayMerchantId: 'applePayMerchantId',
+        merchantId: '21162800',
+        applePayMerchantId: 'merchant.com.tmahur.live',
         amount: 23,
         merchantCapabilities: [
           MerchantCapabilities.threeDSecure,

@@ -1,14 +1,29 @@
 import TapApplePayKit_iOS
 import PassKit
 import CommonDataModelsKit_iOS
+import React
 
 @objc(ApplePayRn)
-class ApplePayRn: NSObject {
-    
-    let controller = RCTPresentedViewController()
+class ApplePayRn: RCTEventEmitter {
+
     let tapApplePay: TapApplePay = .init()
     var argsDataSource:[String:Any]? = [:]
     var isReturned: Bool = false
+    private var hasListeners = false
+    private var cachedSetupFingerprint: String? = nil
+    private var isSetupComplete: Bool = false
+
+    override func supportedEvents() -> [String]! {
+        return ["onApplePaySheetPresented"]
+    }
+
+    override func startObserving() {
+        hasListeners = true
+    }
+
+    override func stopObserving() {
+        hasListeners = false
+    }
     
     public var sdkMode: SDKMode {
         if let sdkModeInt: Int = argsDataSource?["environmentMode"] as? Int {
@@ -142,6 +157,9 @@ class ApplePayRn: NSObject {
                     return
                 }
                 reject("cancelled", "cancelled", "cancelled")
+            } onPresented: { [weak self] done in
+                guard let self = self, self.hasListeners else { return }
+                self.sendEvent(withName: "onApplePaySheetPresented", body: ["presented": done])
             }
         }
     }
@@ -171,6 +189,9 @@ class ApplePayRn: NSObject {
                     return
                 }
                 reject("cancelled", "cancelled", "cancelled")
+            } onPresented: { [weak self] done in
+                guard let self = self, self.hasListeners else { return }
+                self.sendEvent(withName: "onApplePaySheetPresented", body: ["presented": done])
             }
         }
     }
@@ -178,14 +199,59 @@ class ApplePayRn: NSObject {
     
     
     
+    private func setupFingerprint(sandboxKey: String, productionKey: String, merchantID: String, sdkMode: SDKMode) -> String {
+        return "\(sandboxKey)|\(productionKey)|\(merchantID)|\(sdkMode)"
+    }
+
+    @objc(setupApplePay:withResolver:withRejecter:)
+    func setupApplePay(arguments: NSDictionary, resolve: @escaping RCTPromiseResolveBlock, reject: @escaping RCTPromiseRejectBlock) {
+        guard let arguments = arguments as? [String: Any] else {
+            reject("setupApplePayError", "Invalid arguments", nil)
+            return
+        }
+
+        guard let sandboxKey = arguments["sandboxKey"] as? String,
+              let productionKey = arguments["productionKey"] as? String,
+              let merchantID = arguments["merchantId"] as? String,
+              let sdkModeInt = arguments["environmentMode"] as? Int else {
+            reject("setupApplePayError", "Missing required setup parameters", nil)
+            return
+        }
+
+        let sdkMode: SDKMode = sdkModeInt == 0 ? .production : .sandbox
+        let fingerprint = setupFingerprint(sandboxKey: sandboxKey, productionKey: productionKey, merchantID: merchantID, sdkMode: sdkMode)
+
+        if isSetupComplete && cachedSetupFingerprint == fingerprint {
+            resolve(["alreadySetup": true])
+            return
+        }
+
+        self.isSetupComplete = false
+        self.cachedSetupFingerprint = nil
+
+        TapApplePay.sdkMode = sdkMode
+        TapApplePay.secretKey = .init(sandbox: sandboxKey, production: productionKey)
+
+        TapApplePay.setupTapMerchantApplePay(
+            merchantKey: .init(sandbox: sandboxKey, production: productionKey),
+            merchantID: merchantID
+        ) { [weak self] in
+            self?.cachedSetupFingerprint = fingerprint
+            self?.isSetupComplete = true
+            resolve(["alreadySetup": false])
+        } onErrorOccured: { error in
+            reject("setupApplePayError", "Merchant setup failed: \(error)", nil)
+        }
+    }
+
     private func generateRequest(arguments: NSDictionary, callback: @escaping (TapApplePayRequest?) -> Void) {
         guard let arguments = arguments as? [String: Any] else {
             callback(nil)
             return
         }
-        
+
         argsDataSource = arguments
-        
+
         guard let productionKey = productionKey,
               let sandboxKey  = sandboxKey,
               let amount = amount,
@@ -195,14 +261,28 @@ class ApplePayRn: NSObject {
             callback(nil)
             return
         }
+
+        let fingerprint = setupFingerprint(sandboxKey: sandboxKey, productionKey: productionKey, merchantID: merchantID, sdkMode: sdkMode)
+
+        let buildRequest: () -> Void = { [self] in
+            let myTapApplePayRequest: TapApplePayRequest = .init()
+            myTapApplePayRequest.build(paymentNetworks: paymentNetworks, paymentItems: [], paymentAmount: amount, currencyCode: transactionCurrency, applePayMerchantID: applePayMerchantID, merchantCapabilities: self.merchantCapability)
+            callback(myTapApplePayRequest)
+        }
+
         TapApplePay.sdkMode = sdkMode
-        TapApplePay.secretKey = .init(sandbox: sandboxKey,
-                                      production: productionKey)
+        TapApplePay.secretKey = .init(sandbox: sandboxKey, production: productionKey)
+
+        if isSetupComplete && cachedSetupFingerprint == fingerprint {
+            buildRequest()
+            return
+        }
+
         TapApplePay.setupTapMerchantApplePay(merchantKey: .init(sandbox: sandboxKey,
                                                                 production: productionKey), merchantID: merchantID) { [self] in
-            let myTapApplePayRequest:TapApplePayRequest = .init()
-            myTapApplePayRequest.build(paymentNetworks: paymentNetworks, paymentItems: [], paymentAmount: amount, currencyCode: transactionCurrency,applePayMerchantID: applePayMerchantID, merchantCapabilities: self.merchantCapability)
-            callback(myTapApplePayRequest)
+            self.cachedSetupFingerprint = fingerprint
+            self.isSetupComplete = true
+            buildRequest()
         } onErrorOccured: { error in
             callback(nil)
         }

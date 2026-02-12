@@ -5,6 +5,13 @@ import type {
   TapCurrencyCode,
 } from './enums';
 
+export type ApplePaySetupConfig = {
+  sandboxKey: string;
+  productionKey: string;
+  merchantId: string;
+  environmentMode: SdkMode;
+};
+
 export type ApplePayConfig = {
   sandboxKey: string;
   productionKey: string;

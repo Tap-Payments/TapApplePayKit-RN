@@ -1,6 +1,7 @@
 import React from 'react';
 import {
   NativeModules,
+  NativeEventEmitter,
   Platform,
   requireNativeComponent,
   StyleSheet,
@@ -13,6 +14,7 @@ import type {
   ApplePayButtonStyle,
   ApplePayButtonType,
   ApplePayConfig,
+  ApplePaySetupConfig,
   AppleToken,
   TapToken,
 } from './models';
@@ -48,6 +50,58 @@ const ApplePayRn = NativeModules.ApplePayRn
         },
       }
     );
+
+const applePayEventEmitter =
+  Platform.OS === 'ios' ? new NativeEventEmitter(ApplePayRn) : null;
+
+export type ApplePaySheetPresentedEvent = {
+  presented: boolean;
+};
+
+/**
+ * Register a callback that fires when the Apple Pay sheet appears on screen.
+ * Returns a subscription object -- call `.remove()` to unsubscribe.
+ *
+ * @example
+ * const subscription = addApplePaySheetPresentedListener((event) => {
+ *   console.log('Sheet presented:', event.presented);
+ * });
+ * // Later:
+ * subscription.remove();
+ */
+export function addApplePaySheetPresentedListener(
+  callback: (event: ApplePaySheetPresentedEvent) => void
+) {
+  if (Platform.OS !== 'ios' || !applePayEventEmitter) {
+    // Return a no-op subscription for Android
+    return { remove: () => {} };
+  }
+  return applePayEventEmitter.addListener('onApplePaySheetPresented', callback);
+}
+
+export type ApplePaySetupResult = {
+  alreadySetup: boolean;
+};
+
+export function setupApplePay(
+  config: ApplePaySetupConfig
+): Promise<ApplePaySetupResult> {
+  return new Promise<ApplePaySetupResult>(async (resolve, reject) => {
+    try {
+      if (Platform.OS === 'android') {
+        resolve({ alreadySetup: false });
+        return;
+      }
+      const result = await ApplePayRn.setupApplePay({ ...config });
+      resolve(result as ApplePaySetupResult);
+    } catch (e) {
+      let error = e as { message: string };
+      if (error.message) {
+        reject(error.message);
+      }
+    }
+  });
+}
 
 export function getApplePayToken(config: ApplePayConfig) {
   return new Promise<AppleToken>(async (resolve, reject) => {
