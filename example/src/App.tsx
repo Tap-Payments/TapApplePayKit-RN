@@ -24,16 +24,16 @@ export default function App() {
     const init = async () => {
       try {
         const res = await setupApplePay({
-          sandboxKey: 'pk_test_6tUrskBNfZXdamhoPcKJAxnv',
-          productionKey: 'pk_live_MwUuaWQIS86Fk4EsYqrCplez',
-          merchantId: '21162800',
+          sandboxKey: 'pk_test_xxxxxxxxx',
+          productionKey: 'pk_live_xxxxxxxxx',
+          merchantId: 'xxxxxxxxx',
           environmentMode: SdkMode.sandbox,
         });
         console.log('Apple Pay setup done, skipped:', res.alreadySetup);
         const res2 = await setupApplePay({
-          sandboxKey: 'pk_test_6tUrskBNfZXdamhoPcKJAxnv',
-          productionKey: 'pk_live_MwUuaWQIS86Fk4EsYqrCplez',
-          merchantId: '21162800',
+          sandboxKey: 'pk_test_xxxxxxxxx',
+          productionKey: 'pk_live_xxxxxxx',
+          merchantId: 'xxxxxxxxx',
           environmentMode: SdkMode.sandbox,
         });
         console.log('Apple Pay setup done, skipped:', res2.alreadySetup);
@@ -55,14 +55,14 @@ export default function App() {
   const tapToken = useCallback(async () => {
     try {
       const config = {
-        sandboxKey: 'pk_test_6tUrskBNfZXdamhoPcKJAxnv',
-        productionKey: 'pk_live_MwUuaWQIS86Fk4EsYqrCplez',
+        sandboxKey: 'pk_test_xxxxxxxxx',
+        productionKey: 'pk_live_xxxxxxx',
         countryCode: '',
         transactionCurrency: TapCurrencyCode.SAR,
         allowedCardNetworks: [AllowedCardNetworks.VISA],
         environmentMode: SdkMode.sandbox,
-        merchantId: '21162800',
-        applePayMerchantId: 'merchant.com.tmahur.live',
+        merchantId: 'xxxxxxxxx',
+        applePayMerchantId: 'merchant.xxxxxxxxx',
         amount: 23,
         merchantCapabilities: [
           MerchantCapabilities.threeDSecure,
