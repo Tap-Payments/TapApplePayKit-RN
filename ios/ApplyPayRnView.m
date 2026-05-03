@@ -13,6 +13,7 @@
 @interface RCT_EXTERN_MODULE(ApplePayRnViewManager, RCTViewManager)
   RCT_EXPORT_VIEW_PROPERTY(buttonStyle, NSString)
   RCT_EXPORT_VIEW_PROPERTY(buttonType, NSString)
+  RCT_EXPORT_VIEW_PROPERTY(cornerRadius, CGFloat)
 @end
 
 

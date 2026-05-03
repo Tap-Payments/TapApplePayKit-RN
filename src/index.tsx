@@ -31,6 +31,7 @@ type ApplePayButtonProps = {
   buttonType: ApplePayButtonType;
   buttonStyle: ApplePayButtonStyle;
   style: ViewStyle;
+  cornerRadius: number;
 };
 
 const ApplePayButton =
@@ -147,9 +148,11 @@ export function ApplePay({
   buttonStyle,
   onPress,
   style,
+  cornerRadius,
 }: {
   buttonType: ApplePayButtonType;
   buttonStyle: ApplePayButtonStyle;
+  cornerRadius: number;
   onPress: () => void;
   style: ViewStyle;
 }) {
@@ -163,6 +166,7 @@ export function ApplePay({
         buttonStyle={buttonStyle}
         buttonType={buttonType}
         style={style}
+        cornerRadius={cornerRadius}
       />
       <TouchableOpacity
         style={[styles.touchableOpacityStyle]}

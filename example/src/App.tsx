@@ -116,6 +116,7 @@ export default function App() {
           onPress={applePayToken}
           buttonStyle={ApplePayButtonStyle.Black}
           buttonType={ApplePayButtonType.appleLogoOnly}
+          cornerRadius={24}
         />
         <Text>tapToken</Text>
         <ApplePay
@@ -123,6 +124,7 @@ export default function App() {
           onPress={tapToken}
           buttonStyle={ApplePayButtonStyle.Black}
           buttonType={ApplePayButtonType.appleLogoOnly}
+          cornerRadius={24}
         />
       </View>
     </SafeAreaView>

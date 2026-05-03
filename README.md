@@ -162,5 +162,16 @@ const init = useCallback(async () => {
         onPress={init}
         buttonStyle={ApplePayButtonStyle.Black}
         buttonType={ApplePayButtonType.appleLogoOnly}
+        cornerRadius={8}
     />
 ```
+
+### Props
+
+| Prop | Type | Description |
+|------|------|-------------|
+| `buttonType` | `ApplePayButtonType` | Visual variant (e.g. *Buy with Apple Pay*, *Setup Apple Pay*) |
+| `buttonStyle` | `ApplePayButtonStyle` | Color style: `Black` / `White` / `WhiteOutline` / `Auto` |
+| `cornerRadius` | `number` | Button corner radius in points (e.g. `8`) |
+| `style` | `ViewStyle` | Container style — sets the button size |
+| `onPress` | `() => void` | Tap handler — usually triggers `getApplePayToken` |
