@@ -27,10 +27,17 @@ class ApplePayView : UIView {
   let appleButton = TapApplePayButton()
   
   
-  @objc var buttonType: String = ""
-  @objc var buttonStyle: String = ""
+  @objc var buttonType: String = "" {
+    didSet { applyButtonConfiguration() }
+  }
+  @objc var buttonStyle: String = "" {
+    didSet { applyButtonConfiguration() }
+  }
   @objc var cornerRadius: CGFloat = 0.0 {
-    didSet { appleButton.cornerRadius = cornerRadius }
+    didSet {
+      appleButton.cornerRadius = cornerRadius
+      applyButtonConfiguration()
+    }
   }
 
   override init(frame: CGRect){
@@ -44,16 +51,25 @@ class ApplePayView : UIView {
   }
   
   private func setupView(){
-    appleButton.buttonType  = TapApplePayButtonType.BuyWithApplePay
-    appleButton.buttonStyle = TapApplePayButtonStyleOutline.Black
-    appleButton.cornerRadius = cornerRadius
     self.addSubview(appleButton)
   }
-  
+
+  private func applyButtonConfiguration() {
+    appleButton.cornerRadius = cornerRadius
+    appleButton.setup(
+      buttonType: TapApplePayButtonType(rawValue: buttonType) ?? .PayWithApplePay,
+      buttonStyle: TapApplePayButtonStyleOutline(rawValue: buttonStyle) ?? .Black
+    )
+  }
+
+  override func layoutSubviews() {
+    super.layoutSubviews()
+    appleButton.frame = bounds
+  }
+
   override func reactSetFrame(_ frame: CGRect) {
     appleButton.frame = CGRect(x: 0, y: 0, width: frame.width, height: frame.height)
-    appleButton.cornerRadius = cornerRadius
-    appleButton.setup(buttonType: TapApplePayButtonType(rawValue: buttonType) ?? .PayWithApplePay, buttonStyle: TapApplePayButtonStyleOutline(rawValue: buttonStyle) ?? .Black)
+    applyButtonConfiguration()
     super.reactSetFrame(frame)
   }
 }
