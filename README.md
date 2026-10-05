@@ -26,6 +26,7 @@ enum AllowedCardNetworks {
   AMEX = 'AMEX',
   JCB = 'JCB',
   MADA = 'MADA',
+  JAYWAN = 'JAYWAN', // iOS 18.4+
 }
 
 enum MerchantCapabilities {

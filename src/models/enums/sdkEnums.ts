@@ -15,6 +15,8 @@ export enum AllowedCardNetworks {
   VISA = 'VISA',
   VPAY = 'VPAY',
   MADA = 'MADA',
+  /** Requires iOS 18.4 or later, ignored on older versions */
+  JAYWAN = 'JAYWAN',
 }
 
 export enum MerchantCapabilities {
