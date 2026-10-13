@@ -25,7 +25,8 @@ class ApplePayView : UIView {
   
   
   let appleButton = TapApplePayButton()
-  
+  private var lastSize: CGSize = .zero
+
   
   @objc var buttonType: String = "" {
     didSet { applyButtonConfiguration() }
@@ -62,15 +63,16 @@ class ApplePayView : UIView {
     )
   }
 
+  // Re-apply the configuration whenever the size changes. Unlike reactSetFrame,
+  // layoutSubviews is called on both the old architecture and the new
+  // architecture's legacy view interop layer.
   override func layoutSubviews() {
     super.layoutSubviews()
     appleButton.frame = bounds
-  }
-
-  override func reactSetFrame(_ frame: CGRect) {
-    appleButton.frame = CGRect(x: 0, y: 0, width: frame.width, height: frame.height)
-    applyButtonConfiguration()
-    super.reactSetFrame(frame)
+    if bounds.size != lastSize && bounds.width > 0 && bounds.height > 0 {
+      lastSize = bounds.size
+      applyButtonConfiguration()
+    }
   }
 }
 
